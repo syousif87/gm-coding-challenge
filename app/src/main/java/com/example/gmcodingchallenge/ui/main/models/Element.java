@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Element {
-    public Integer id;
+    private int id;
     private List<Item> items = new ArrayList<Item>();
 
     public Element(Integer id) {
@@ -14,6 +14,10 @@ public class Element {
         items.add(new Item());
         items.add(new Item());
         items.add(new Item());
+    }
+
+    public int getId() {
+        return id;
     }
 
     public List<Item> getItems() {

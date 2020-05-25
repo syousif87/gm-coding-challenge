@@ -2,42 +2,49 @@ package com.example.gmcodingchallenge;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.gmcodingchallenge.ui.main.MainFragment;
-import com.example.gmcodingchallenge.ui.main.models.Item;
 import com.example.gmcodingchallenge.ui.main.models.Lib;
 import com.example.gmcodingchallenge.ui.main.models.LibImpl;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.gmcodingchallenge.ui.main.util.ItemProcessor;
 
 public class MainActivity extends AppCompatActivity {
-    List<Item> queue = new ArrayList<>();
+    private ItemProcessor itemProcessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.container, MainFragment.newInstance())
-//                    .commitNow();
-//        }
 
-        LinearLayout l = findViewById(R.id.linearLayout);
+        Context context = this;
+        LinearLayout layout = findViewById(R.id.linearLayout);
+        itemProcessor = new ItemProcessor();
+        itemProcessor.getProcessedObservable().subscribe( val -> {
+            try {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView textView = new TextView(context);
+                        textView.setText(val);
+                        layout.addView(textView);
+                    }
+                });
+
+
+            } catch (Exception e) {
+                // TODO: Handle exception
+            }
+        });
+
+        itemProcessor.start();
+
 
         Lib libImpl = new LibImpl();
         libImpl.getElementsObservable().subscribe(ele -> {
-            libImpl.queryElementForItems(ele).subscribe(items -> {
-                for (int i = 0; i < items.size(); i++) {
-                    TextView textView = new TextView(this);
-                    textView.setText(ele.id + " " + items.get(i).handle());
-                    l.addView(textView);
-                }
-            });
+            itemProcessor.processElement(ele, libImpl.queryElementForItems(ele));
         });
     }
 }
