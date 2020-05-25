@@ -5,15 +5,14 @@ import java.util.List;
 
 public class Element {
     private int id;
-    private List<Item> items = new ArrayList<Item>();
+    private List<Item> items = new ArrayList<>();
 
     public Element(Integer id) {
         this.id = id;
-        items.add(new Item());
-        items.add(new Item());
-        items.add(new Item());
-        items.add(new Item());
-        items.add(new Item());
+
+        for (int i = 1; i <= 5; i++) {
+            items.add(new Item(i));
+        }
     }
 
     public int getId() {

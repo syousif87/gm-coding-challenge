@@ -1,6 +1,5 @@
 package com.example.gmcodingchallenge.ui.main.models;
 
-
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;

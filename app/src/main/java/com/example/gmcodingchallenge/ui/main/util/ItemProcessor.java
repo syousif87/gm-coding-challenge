@@ -38,14 +38,28 @@ public class ItemProcessor extends Thread {
             while (queue.size() > 0) {
                 Item item = queue.remove(0);
                 int processTime = item.handle();
+                int id = currentElementId;
+
+                processed.onNext("Beginning handling of Item ID " +
+                        item.getId() +
+                        " from Element ID " +
+                        id
+                );
 
                 try {
-                    Thread.sleep(processTime * 1);
+                    Thread.sleep(processTime * 1000);
                 } catch (InterruptedException ie) {
                     // TODO: Handle error
                 }
 
-                processed.onNext(currentElementId + " " + processTime);
+                processed.onNext("Finished handling of Item ID " +
+                        item.getId() +
+                        " from Element ID " +
+                        id +
+                        " after " +
+                        processTime +
+                        " seconds"
+                );
             }
 
             try {
